@@ -1,4 +1,6 @@
-package com.latexide.menu;
+package com.latexide.menu.listener;
+
+import com.latexide.menu.CodeFile;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -11,10 +13,10 @@ import java.util.function.Consumer;
 
 public class OpenMenuListener implements ActionListener {
     private JPanel parent;
-    private Consumer<String> callback;
+    private Consumer<CodeFile> callback;
     private JFileChooser fileChooser;
 
-    public OpenMenuListener(JPanel parent, Consumer<String> callback) {
+    public OpenMenuListener(JPanel parent, Consumer<CodeFile> callback) {
         this.parent = parent;
         this.callback = callback;
 
@@ -26,14 +28,13 @@ public class OpenMenuListener implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent event) {
-        System.out.println(event.getActionCommand());
         int result = fileChooser.showOpenDialog(parent);
 
         if (result == JFileChooser.APPROVE_OPTION) {
             File selectedFile = fileChooser.getSelectedFile();
             try {
-                String code = Files.readString(Path.of(selectedFile.getAbsolutePath()));
-                callback.accept(code);
+                String content = Files.readString(Path.of(selectedFile.getAbsolutePath()));
+                callback.accept(new CodeFile(selectedFile.getName(), content));
             } catch (Exception ex) {
                 ex.printStackTrace();
             }

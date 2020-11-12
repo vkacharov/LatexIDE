@@ -3,22 +3,25 @@ package com.latexide;
 import com.latexide.code.highlight.listener.CodeHighlightListener;
 import com.latexide.code.highlight.provider.CodeHighlightProvider;
 import com.latexide.code.highlight.provider.SimpleCodeHighlightProvider;
-import com.latexide.menu.OpenMenuListener;
+import com.latexide.menu.listener.OpenMenuListener;
 
 import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
+import java.awt.*;
 import java.awt.event.KeyEvent;
-import java.io.File;
 
 public class LatexIDE {
     private JPanel mainPanel;
-    private JTextPane codePane;
+    private JTabbedPane tabbedPane;
     private JMenuBar menuBar;
+
+    private CodeHighlightListener codeHighlightListener;
 
     public LatexIDE() {
         CodeHighlightProvider highlightProvider = new SimpleCodeHighlightProvider();
-        codePane.getDocument().addDocumentListener(new CodeHighlightListener(highlightProvider));
+        codeHighlightListener = new CodeHighlightListener(highlightProvider);
         menuBar = createMenuBar();
+
+        addCodeTab("untitled", "");
     }
 
     public JMenuBar createMenuBar() {
@@ -28,13 +31,26 @@ public class LatexIDE {
         file.setMnemonic(KeyEvent.VK_F);
         JMenuItem open = new JMenuItem("Open", KeyEvent.VK_O);
         open.addActionListener(new OpenMenuListener(mainPanel, code -> {
-            codePane.setText(code);
+            addCodeTab(code.getName(), code.getContent());
         }));
         file.add(open);
         menuBar.add(file);
 
         return menuBar;
     }
+
+    private void addCodeTab(String title, String code) {
+        JPanel newTabPanel = new JPanel();
+        JTextPane newTabCodePane = new JTextPane();
+        newTabCodePane.getDocument().addDocumentListener(codeHighlightListener);
+        newTabCodePane.setText(code);
+        newTabCodePane.setPreferredSize(new Dimension(500, 750));
+        newTabPanel.add(newTabCodePane);
+
+        tabbedPane.addTab(title, newTabPanel);
+        tabbedPane.setSelectedIndex(tabbedPane.getTabCount() - 1);
+    }
+
     public static void main(String[] args) {
         JFrame app = new JFrame("LatexIDE");
         LatexIDE latexIDE = new LatexIDE();

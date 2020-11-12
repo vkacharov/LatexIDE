@@ -63,7 +63,7 @@ public class CodeHighlightListener implements DocumentListener {
         SimpleAttributeSet highlightStyle = new SimpleAttributeSet();
         switch(highlightType) {
             case FUNCTION:
-                StyleConstants.setForeground(highlightStyle, Color.BLUE);
+                StyleConstants.setForeground(highlightStyle, Color.RED);
                 StyleConstants.setItalic(highlightStyle, true);
         }
 
