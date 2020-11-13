@@ -4,6 +4,7 @@ import com.latexide.code.highlight.listener.CodeHighlightListener;
 import com.latexide.code.highlight.provider.CodeHighlightProvider;
 import com.latexide.code.highlight.provider.SimpleCodeHighlightProvider;
 import com.latexide.menu.listener.OpenMenuListener;
+import com.latexide.menu.listener.SaveMenuListener;
 
 import javax.swing.*;
 import java.awt.*;
@@ -34,7 +35,11 @@ public class LatexIDE {
             addCodeTab(code.getName(), code.getContent());
         }));
         file.add(open);
+
+        JMenuItem save = new JMenuItem("Save", KeyEvent.VK_S);
+        save.addActionListener(new SaveMenuListener(tabbedPane));
         menuBar.add(file);
+        file.add(save);
 
         return menuBar;
     }
